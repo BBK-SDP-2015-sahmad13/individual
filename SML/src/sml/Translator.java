@@ -91,7 +91,7 @@ public class Translator {
 		for(Instruction instr: program){ 
 			if(instr.label.equalsIgnoreCase(label)){
 				System.out.println("Label repeated. Correct the instruction with label: " + label);
-				System.out.println("Ignoring the instruction.");
+				System.out.println("Terminating program execution. Correct the program and run again.");
 				System.exit(0);
 			}
 		}
