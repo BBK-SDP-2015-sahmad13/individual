@@ -91,8 +91,8 @@ public class Translator {
 		for(Instruction instr: program){ 
 			if(instr.label.equalsIgnoreCase(label)){
 				System.out.println("Label repeated. Correct the instruction with label: " + label);
-//				System.out.println("Ignoring the instruction.");
-//				System.exit(0);
+				System.out.println("Ignoring the instruction.");
+				System.exit(0);
 			}
 		}
 			
@@ -105,7 +105,7 @@ public class Translator {
 		
 		// if instruction is bnz, check if the label points to an existing instruction label in the program instructions
 		if(ins.equals("bnz")){
-			String jumpToLbl; // label of instruction to jump to in the condition in bnz instruction is true
+			String jumpToLbl; // label of instruction to jump to if the condition in bnz instruction is true
 			boolean found = false; // if instruction, to jump to, is found
 			if(opList.get(1) != null && opList.get(1).length() > 0){
 				jumpToLbl = opList.get(1);
@@ -117,35 +117,37 @@ public class Translator {
 				}
 				if(!found){
 					System.out.println("Bnz instruction should point to an existing instruction's label. Correct instruction with label: " + label);
-//					System.out.println("Terminating program execution. Correct the program and run again.");
-//					System.exit(0);
+					System.out.println("Terminating program execution. Correct the program and run again.");
+					System.exit(0);
 				}
 			}
 		}
 		
 		try {
-			Constructor<?> instConstr;
+			// supports sml.***Instruction format for instruction subclass name
 			Class<?> instClass = Class.forName("sml."+ ins.substring(0, 1).toUpperCase() + ins.substring(1)	+ "Instruction");
-			instConstr = instClass.getConstructor(new Class[]{String.class, String.class, List.class});
-			Object obj =  instConstr.newInstance(new Object[]{label, ins, opList}); // create a new instance of instruction and pass it label , opcode and operands list
-			if(obj instanceof Instruction)
-				return (Instruction) obj;
+			Constructor<?> instConstr = instClass.getConstructor(new Class[]{String.class, String.class, List.class});
+			// create a new instance of instruction and pass it label , opcode and operands list
+			Object instrObj =  instConstr.newInstance(new Object[]{label, ins, opList});  // calls the constructor with the given params	
+			if(instrObj instanceof Instruction)
+				return (Instruction) instrObj;
 			return null;
 		} catch(ClassNotFoundException cnfEx){
 			System.out.println("Invalid Instruction Type. Correct the instruction with label: " + label);
-//			System.out.println("Terminating program execution. Correct the program and run again.");
-//			System.exit(0);
+			System.out.println("Terminating program execution. Correct the program and run again.");
+			System.exit(0);
 		} catch(InvocationTargetException iTE){
-			if(iTE.getTargetException() != null && iTE.getTargetException().getMessage() != null){
-				System.out.println(iTE.getTargetException().getMessage());
-//				System.out.println("Terminating program execution. Correct the program and run again.");
-//				System.exit(0);
+			if(iTE.getCause() instanceof NumberFormatException){
+				System.out.println("Invalid Operand value. Correct the instruction with label: " + label);
+				System.out.println("Terminating program execution. Correct the program and run again.");
+				System.exit(0);
 			} else{
-				System.out.println("Invalid Operands. Correct the instruction with label: " + label);
-//				System.out.println("Terminating program execution. Correct the program and run again.");
-//				System.exit(0);
+				System.out.println(iTE.getTargetException().getMessage());
+				System.out.println("Terminating program execution. Correct the program and run again.");
+				System.exit(0);
 			}
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

@@ -23,7 +23,9 @@ public class OutInstruction extends Instruction {
 	
 	public OutInstruction(String label, String op, List<String> operands) throws Exception {
 		super(label, "out", operands);
-		if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31){
+		if(operands == null || operands.size() != 1){
+			throw new Exception("Invalid number of operands for instruction with label: " + label);
+		} else if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31){
 			throw new Exception("Invalid register number for instruction with label: " + label);
 		}
 		this.register = Integer.valueOf(operands.get(0));

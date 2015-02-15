@@ -25,7 +25,9 @@ public class BnzInstruction extends Instruction {
 
 	public BnzInstruction(String label, String op, List<String> operands) throws Exception {
 		super(label, "bnz", operands);
-		if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31){
+		if(operands == null || operands.size() != 2){
+			throw new Exception("Invalid number of operands for instruction with label: " + label);
+		} else if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31){
 			throw new Exception("Invalid register number for instruction with label: " + label);
 		}
 		this.register = Integer.valueOf(operands.get(0));

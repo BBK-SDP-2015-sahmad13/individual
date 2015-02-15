@@ -27,7 +27,9 @@ public class SubInstruction extends Instruction {
 	
 	public SubInstruction(String label, String op, List<String> operands) throws Exception {
 		super(label, "sub", operands);
-		if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31
+		if(operands == null || operands.size() != 3){
+			throw new Exception("Invalid number of operands for instruction with label: " + label);
+		} else if(Integer.valueOf(operands.get(0)) < 0 || Integer.valueOf(operands.get(0)) > 31
 				|| Integer.valueOf(operands.get(1)) < 0 || Integer.valueOf(operands.get(1)) > 31
 				|| Integer.valueOf(operands.get(2)) < 0 || Integer.valueOf(operands.get(2)) > 31){
 			throw new Exception("Invalid register number for instruction with label: " + label);
